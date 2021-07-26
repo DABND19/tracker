@@ -80,11 +80,11 @@ class Tracker:
                 return
 
             first_unanswered_message = chat_data["unanswered_messages"][0]
-            delta = message.date - first_unanswered_message.date
+            delta = message.date - first_unanswered_message["date"]
             chat_data["deltas"].append(delta.seconds)
             chat_data["unanswered_messages"].clear()
         else:
-            chat_data["unanswered_messages"].append(message)
+            chat_data["unanswered_messages"].append({ "date": message.date })
 
     def __report_handler(self, update, context):
         chat = update.message.chat
@@ -93,7 +93,7 @@ class Tracker:
 
         try:
             avg_time = sum(deltas) / len(deltas)
-            minutes = avg_time // 60
+            minutes = int(avg_time // 60)
             seconds = int(avg_time % 60)
             message = f"В текущем чате среднее время ответа составляет {minutes} минут {seconds} секунд"
         except ZeroDivisionError:
@@ -102,7 +102,7 @@ class Tracker:
         update.message.reply_text(message)
 
     def __get_raw_data_handler(self, update, message):
-        update.message.reply_text(str(self.__get_chat_data()))
+        update.message.reply_text(str(self.__get_chat_data(update.message.chat)))
 
     def __error_handler(self, update, context):
         self.logger.warning(f"Update {update} caused error {context.error}")
