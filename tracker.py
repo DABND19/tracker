@@ -22,6 +22,26 @@ ourids = [
     387778961  # Yulia
 ]
 
+# Вот в таком формате мне нужно получать кэш:
+# CACHE_EXAMPLE = {
+#     #chat_id
+#     123123: {
+#         "title": "TITLE_OF_CHAT",
+#         "unanswered_messages": [
+#             {
+#                 "date": datetime(1998, 6, 19),
+#             },
+#             {
+#                 "date": datetime(2021, 7, 26),
+#             },
+#         ],
+#         "deltas": [
+#             datetime.timedelta(seconds=25),
+#             datetime.timedelta(seconds=42)
+#         ],
+#     }
+# }
+
 
 class Tracker:
     logger = logging.getLogger(__name__)
