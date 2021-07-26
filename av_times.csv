@@ -1,7 +1,9 @@
-,Кудесники
-average_time_between,0
-cnt,0
-ids,['666165975']
-last_delta,0
-last_message_time,0
-status,0
+,V_D,Кудесники
+last_message_time,0,0
+last_delta,0,0
+average_time_between,0,['666165975']
+cnt,0,0
+status,0,0
+ids,['109601926'],0
+deltas,[],[]
+unanswered_messages,"[<telegram.message.Message object at 0x7fa9a650fb20>, <telegram.message.Message object at 0x7fa9a650f9d0>]",[]
