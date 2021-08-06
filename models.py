@@ -1,5 +1,5 @@
 from sqlalchemy import Column, ForeignKey
-from sqlalchemy.sql.sqltypes import DateTime, Integer, String, BigInteger
+from sqlalchemy.sql.sqltypes import DateTime, Float, String, BigInteger, Integer
 from sqlalchemy.ext.declarative import declarative_base
 
 
@@ -24,6 +24,6 @@ class Reply(Base):
     __tablename__ = "Reply"
     id = Column(Integer, primary_key=True)
     time = Column(DateTime)
-    delta = Column(Integer)
+    delta = Column(Float)
     employee = Column(Integer, ForeignKey(Employee.id))
     chat = Column(BigInteger, ForeignKey(Chat.id))
