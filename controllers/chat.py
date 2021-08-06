@@ -1,3 +1,4 @@
+from typing import List
 from sqlalchemy.sql.expression import delete
 from models import Chat
 from aiogram import types
@@ -15,6 +16,6 @@ class ChatController:
     async def delete(self, chat: types.Chat):
         await self.__session.execute(delete(Chat).where(Chat.id == chat.id))
 
-    async def get_all_ids(self):
+    async def get_all_ids(self) -> List[int]:
         result = await self.__session.execute(select(Chat.id))
-        return result.all()
+        return list(map(lambda record: record[0], result.all()))
