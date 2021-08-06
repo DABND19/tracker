@@ -11,7 +11,7 @@ class Employee(Base):
     __tablename__ = "Employee"
     id = Column(Integer, primary_key=True)
     username = Column(String)
-    fullname = Column(String)
+    full_name = Column(String)
 
 
 class Chat(Base):

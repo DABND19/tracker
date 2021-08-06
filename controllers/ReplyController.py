@@ -11,12 +11,11 @@ class ReplyController:
 
     async def create(self, question: types.Message, reply: types.Message):
         self.__session.add(
-            Reply(
-                id=reply.message_id,
-                time=reply.date,
-                delta=(reply.date - question.date).total_seconds(),
-                employee=reply.from_user.id,
-                chat=reply.chat.id)
+            Reply(id=reply.message_id,
+                  time=reply.date,
+                  delta=(reply.date - question.date).total_seconds(),
+                  employee=reply.from_user.id,
+                  chat=reply.chat.id)
         )
 
     async def avg_for(self, begin: datetime, end: datetime, chat: types.Chat) -> float:
