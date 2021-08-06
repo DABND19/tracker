@@ -24,8 +24,8 @@ class ChatsStore:
     def __getitem__(self, key: int) -> ChatStore:
         return self._data[key]
 
-    def get_chats_ids(self) -> List[int]:
-        return self._data.keys()
+    def __contains__(self, chat: types.Chat) -> bool:
+        return chat.id in self._data.keys()
     
     def add_chat(self, chat: types.Chat) -> None:
         self._data.setdefault(chat.id, ChatStore(lock=Lock(), unanswered_messages=[]))

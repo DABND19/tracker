@@ -7,7 +7,7 @@ from controllers.chat import ChatController
 
 @dp.message_handler(CommandStart(), ChatTypeFilter([ChatType.GROUP]))
 async def start_command_handler(message: types.Message) -> None:
-    if message.chat.id in chats_store.get_chats_ids():
+    if message.chat in chats_store:
         await message.answer("This chat is already tracked")
         return
 
