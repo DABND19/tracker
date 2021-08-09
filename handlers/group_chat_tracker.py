@@ -13,7 +13,6 @@ async def group_chat_tracker(message: types.Message) -> None:
     async with store.lock, Session() as session:
         employee_controller = EmployeeController(session)
         employees_ids = await employee_controller.get_all_ids()
-        print(employees_ids)
         if message.from_user.id in employees_ids:
             if not store.unanswered_messages:
                 return

@@ -19,3 +19,7 @@ class ChatController:
     async def get_all_ids(self) -> List[int]:
         result = await self.__session.execute(select(Chat.id))
         return list(map(lambda record: record[0], result.all()))
+
+    async def get_list(self) -> List[Chat]:
+        result = await self.__session.execute(select(Chat))
+        return result.scalars().all()
