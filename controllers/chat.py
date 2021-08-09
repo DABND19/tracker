@@ -10,7 +10,7 @@ class ChatController:
     def __init__(self, session: AsyncSession):
         self.__session = session
 
-    async def create(self, chat: types.Chat):
+    def create(self, chat: types.Chat):
         self.__session.add(Chat(id=chat.id, title=chat.title))
 
     async def delete(self, chat: types.Chat):

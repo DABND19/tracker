@@ -9,10 +9,9 @@ class ReplyController:
     def __init__(self, session: AsyncSession):
         self.__session = session
 
-    async def create(self, question: types.Message, reply: types.Message):
+    def create(self, question: types.Message, reply: types.Message):
         self.__session.add(
-            Reply(id=reply.message_id,
-                  time=reply.date,
+            Reply(time=reply.date,
                   delta=(reply.date - question.date).total_seconds(),
                   employee=reply.from_user.id,
                   chat=reply.chat.id)

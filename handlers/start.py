@@ -13,7 +13,7 @@ async def start_command_handler(message: types.Message) -> None:
 
     async with Session() as session:
         chat_controller = ChatController(session)
-        await chat_controller.create(message.chat)
+        chat_controller.create(message.chat)
         chats_store.add_chat(message.chat)
         await session.commit()
     await message.answer("Start tracking this chat")
