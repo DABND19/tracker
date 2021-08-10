@@ -1,7 +1,12 @@
 from aiogram import executor
 from models import Base
 from loader import engine, Session, dp, chats_store
-import filters, handlers
+import filters
+import handlers
+import logging
+
+
+logging.basicConfig(level=logging.INFO)
 
 
 async def on_startup(*args):
