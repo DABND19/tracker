@@ -16,6 +16,6 @@ class AdminsFilter(BoundFilter):
 
         async with Session() as session:
             employee_controller = EmployeeController(session)
-            admins_ids = employee_controller.get_admins_ids()
+            admins_ids = await employee_controller.get_admins_ids()
 
         return user.id in admins_ids

@@ -1,10 +1,11 @@
-from datetime import timedelta
 from aiogram import types
-from aiogram.utils.markdown import text, bold
+from aiogram.utils.markdown import text, bold, pre
 from aiogram.dispatcher.filters import Text
 from loader import dp, Session
 from controllers.reply import ReplyController
 import asyncio
+from itertools import chain
+from tabulate import tabulate
 
 
 @dp.callback_query_handler(Text(startswith="chat_"))
@@ -19,9 +20,12 @@ async def chat_stats_handler(callback_query: types.CallbackQuery):
             await callback_query.answer("We don't have stats for this chat")
             return
 
-        payload = text(bold(chat_report.title),
-                       *map(lambda employee: f"{employee.full_name}: {employee.avg_delta}", employees_report),
-                       f"Total for this chat: {chat_report.avg_delta}",
-                       sep="\n")
+        table = tabulate({
+            "Name": chain(map(lambda employee: employee.full_name, employees_report)),
+            "Avg": chain(map(lambda employee: employee.avg_delta, employees_report), [chat_report.avg_delta]),
+            "Count": chain(map(lambda employee: employee.replies_count, employees_report), [chat_report.replies_count])
+        }, tablefmt="plain", headers="keys")
+
+        payload = text(bold(chat_report.title), pre(table), sep="\n")
 
         await callback_query.message.edit_text(payload, parse_mode=types.ParseMode.MARKDOWN)
