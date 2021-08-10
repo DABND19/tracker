@@ -14,8 +14,8 @@ async def chat_stats_handler(callback_query: types.CallbackQuery):
     chat_id = int(chat_id)
     async with Session() as session:
         reply_controller = ReplyController(session)
-        chat_report, employees_report = await asyncio.gather(reply_controller.chat_report(chat_id),
-                                                             reply_controller.employees_report(chat_id))
+        chat_report = await reply_controller.chat_report(chat_id)
+        employees_report = await reply_controller.employees_report(chat_id)
         if chat_report.avg_delta is None:
             await callback_query.answer("We don't have stats for this chat")
             return

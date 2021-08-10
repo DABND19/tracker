@@ -30,35 +30,30 @@ class ReplyController:
                   chat=reply.chat.id)
         )
 
-    async def chat_report(self, chat_id: int, begin: Optional[datetime] = None, end: datetime = None) -> ChatReport:
-        query = select(Chat.title,
-                       func.avg(Reply.delta),
-                       func.count(Reply.id))\
+    async def chat_report(self, chat_id: int) -> ChatReport:
+        subquery = select(Reply.chat,
+                          func.avg(Reply.delta).label("avg_delta"),
+                          func.count(Reply.id).label("replies_count"))\
+            .group_by(Reply.chat)\
             .where(Reply.chat == chat_id)\
-            .join(Chat, Chat.id == Reply.chat)
+            .subquery()
 
-        if not begin is None:
-            query = query.where(Reply.time >= begin)
-        if not end is None:
-            query = query.where(Reply.time <= end)
+        query = select(subquery, Chat.title).join(Chat)
 
         result = await self.__session.execute(query)
         record = result.first()
-        return ChatReport(title=record[0], avg_delta=timedelta(seconds=int(record[1])), replies_count=record[2])
+        return ChatReport(title=record.title, avg_delta=timedelta(seconds=int(record.avg_delta)), replies_count=record.replies_count)
 
-    async def employees_report(self, chat_id: int, begin: Optional[datetime] = None, end: Optional[datetime] = None) -> List[EmployeeStats]:
-        query = select(Employee.full_name,
-                       func.avg(Reply.delta),
-                       func.count(Reply.employee))\
+    async def employees_report(self, chat_id: int) -> List[EmployeeStats]:
+        subquery = select(Reply.employee,
+                          func.avg(Reply.delta).label("avg_delta"),
+                          func.count(Reply.employee).label("replies_count"))\
             .where(Reply.chat == chat_id)\
-            .group_by(Reply.employee)\
-            .join(Employee, Employee.id == Reply.employee)
+            .group_by(Reply.chat, Reply.employee)\
+            .subquery()
 
-        if not begin is None:
-            query = query.where(Reply.time >= begin)
-        if not end is None:
-            query = query.where(Reply.time <= end)
+        query = select(subquery, Employee.full_name).join(Employee)
 
         result = await self.__session.execute(query)
-        return list(map(lambda record: EmployeeStats(full_name=record[0], avg_delta=timedelta(seconds=int(record[1])), replies_count=record[2]),
+        return list(map(lambda record: EmployeeStats(full_name=record.full_name, avg_delta=timedelta(seconds=int(record.avg_delta)), replies_count=record.replies_count),
                         result.all()))
