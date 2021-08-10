@@ -14,4 +14,4 @@ with env.prefixed("DB_"):
     DB_PASSWORD = env.str("PASSWORD")
 
 DB_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}" if not DEBUG \
-         else "sqliate+aiosqlite:///database.db"
+         else "sqlite+aiosqlite:///database.db"
