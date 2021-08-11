@@ -14,15 +14,15 @@ class BaseStore:
     LOADING_LOCK = Lock()
     KEY = None
     EXPIRES = timedelta(minutes=15)
-    
+
     @staticmethod
     async def _load_from_db(session: AsyncSession) -> List:
         return []
-    
+
     @classmethod
     async def contains(cls, item):
         await cls._load_if_expired()
-        return engine.sismember(cls.KEY, item)        
+        return engine.sismember(cls.KEY, item)
 
     @classmethod
     async def load(cls) -> None:
@@ -32,7 +32,7 @@ class BaseStore:
             pipe.sadd(cls.KEY, *items)
             pipe.expire(cls.KEY, int(cls.EXPIRES.total_seconds()))
             pipe.execute()
-    
+
     @classmethod
     async def _load_if_expired(cls) -> None:
         async with cls.LOADING_LOCK:
