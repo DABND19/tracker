@@ -1,8 +1,7 @@
+from data.store.admins import AdminsStore
 from typing import Union
 from aiogram.dispatcher.filters import BoundFilter
 from aiogram import types
-from loader import Session
-from controllers.employee import EmployeeController
 
 
 class AdminsFilter(BoundFilter):
@@ -14,8 +13,4 @@ class AdminsFilter(BoundFilter):
         else:
             return False
 
-        async with Session() as session:
-            employee_controller = EmployeeController(session)
-            admins_ids = await employee_controller.get_admins_ids()
-
-        return user.id in admins_ids
+        return await AdminsStore.contains(user.id)

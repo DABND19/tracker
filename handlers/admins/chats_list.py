@@ -1,3 +1,4 @@
+from filters.admins import AdminsFilter
 from aiogram import types
 from aiogram.utils.markdown import bold
 from aiogram.dispatcher.filters import Command
@@ -6,7 +7,7 @@ from loader import dp, Session
 from controllers.chat import ChatController
 
 
-@dp.message_handler(Command(["chats"]))
+@dp.message_handler(Command(["chats"]), AdminsFilter())
 async def chats_list_handler(message: types.Message):
     async with Session() as session:
         chat_controller = ChatController(session)

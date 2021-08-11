@@ -16,3 +16,9 @@ with env.prefixed("DB_"):
 
 DB_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}" if not DEBUG \
          else "sqlite+aiosqlite:///database.db"
+
+with env.prefixed("REDIS_"):
+    REDIS_HOST = env.str("HOST")
+    # REDIS_PORT = env.int("PORT")
+    # REDIS_DB = env.str("DB")
+    # REDIS_PASSWORD = env.str("PASSWORD")
