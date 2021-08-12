@@ -1,0 +1,37 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:12-alpine
+    container_name: tracker_postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456
+    restart: always
+
+  redis:
+    image: redis:alpine
+    container_name: tracker_redis
+    ports:
+      - 6379:6379
+
+  app:
+    build: ./
+    container_name: tracker_app
+    environment:
+      - BOT_TOKEN=1704348480:AAF9LGs3FSyeJSwigwZnBt61nuIWsyEQTRU
+      - POSTGRES_HOST=tracker_postgres
+      - POSTGRES_PORT=5432
+      - REDIS_HOST=tracker_redis
+    volumes:
+      - .:/tracker
+    command: python3 app.py
+    links:
+      - postgres
+      - redis
+volumes:
+  pgdata:
