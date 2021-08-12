@@ -1,4 +1,3 @@
-from filters.admins import AdminsFilter
 from aiogram import types
 from aiogram.utils.markdown import text, bold, pre
 from aiogram.dispatcher.filters import Text
