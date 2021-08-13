@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import select, func
 from aiogram import types
 from models import Reply, Employee, Chat
-from typing import Optional, NamedTuple, List
+from typing import Optional, NamedTuple, List, Optional
 
 
 class EmployeeStats(NamedTuple):
@@ -30,7 +30,7 @@ class ReplyController:
                   chat=reply.chat.id)
         )
 
-    async def chat_report(self, chat_id: int) -> ChatReport:
+    async def chat_report(self, chat_id: int) -> Optional[ChatReport]:
         subquery = select(Reply.chat,
                           func.avg(Reply.delta).label("avg_delta"),
                           func.count(Reply.id).label("replies_count"))\
@@ -42,6 +42,10 @@ class ReplyController:
 
         result = await self.__session.execute(query)
         record = result.first()
+        
+        if record is None:
+            return None
+        
         return ChatReport(title=record.title, avg_delta=timedelta(seconds=int(record.avg_delta)), replies_count=record.replies_count)
 
     async def employees_report(self, chat_id: int) -> List[EmployeeStats]:
