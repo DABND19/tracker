@@ -25,6 +25,6 @@ if __name__ == "__main__":
         on_startup=on_startup,
         skip_updates=True,
         webhook_path="/",
-        host="localhost",
+        host="0.0.0.0",
         port=3001
     )
