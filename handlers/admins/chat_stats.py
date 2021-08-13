@@ -26,6 +26,6 @@ async def chat_stats_handler(callback_query: types.CallbackQuery):
             "Count": chain(map(lambda employee: employee.replies_count, employees_report), [chat_report.replies_count])
         }, tablefmt="plain", headers="keys")
 
-        payload = text(bold(escape_md(chat_report.title)), pre(escape_md(table)), sep="\n")
+        payload = text(f"<b>{chat_report.title}</b>", f"<pre>{table}</pre>", sep="\n")
 
-        await callback_query.message.edit_text(payload, parse_mode=types.ParseMode.MARKDOWN)
+        await callback_query.message.edit_text(payload, parse_mode=types.ParseMode.HTML)
