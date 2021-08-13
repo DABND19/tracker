@@ -7,34 +7,27 @@ import logging
 from data.config import WEBHOOK_URL
 
 
-logging.basicConfig(level=logging.WARNING)
-
 async def on_startup(*args):
-    logging.info(WEBHOOK_URL)
-    
     webhook = await bot.get_webhook_info()
-    logging.info(f"Prev webhook: {webhook}")
-    
     if webhook.url != WEBHOOK_URL:
         if not webhook.url:
             await bot.delete_webhook()
         else:
-            logging.error(f"Webhook is already started on: {webhook.url}")
-
+            logging.warning(f"Webhook is already started on: {webhook.url}")
     await bot.set_webhook(WEBHOOK_URL, certificate=open("cert.pem", "rb"))
-
-    webhook = await bot.get_webhook_info()
-    logging.info(f"Current webhook: {webhook}")
 
     async with engine.begin() as connection:
         await connection.run_sync(Base.metadata.create_all)
     async with Session() as session:
         await chats_store.load(session)
 
+
 async def on_shutdown(*args):
     await bot.delete_webhook()
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.WARNING)
+
     executor.start_webhook(
         dispatcher=dp,
         on_startup=on_startup,

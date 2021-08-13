@@ -12,7 +12,7 @@ services:
     ports:
       - 8443:8443
     restart: always
-    links: 
+    links:
       - app
 
   postgres:
@@ -24,7 +24,7 @@ services:
       - POSTGRES_NAME=$DB_NAME
       - POSTGRES_USER=$DB_USER
       - POSTGRES_PASSWORD=$DB_PASSWORD
-    env_file: 
+    env_file:
       - .env
     restart: always
 
