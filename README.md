@@ -7,5 +7,5 @@ $ openssl req -newkey rsa:2048 -sha256 -nodes -keyout cert.key -x509 -days 365 -
 ```
 ### Run docker-compose
 ```
-$ docker-compose build && docker compose start
+$ docker-compose up -d
 ```
