@@ -12,41 +12,40 @@ services:
     ports:
       - 8443:8443
     restart: always
-    depends_on: 
+    links: 
       - app
 
   postgres:
     image: postgres:alpine
     container_name: tracker_postgres
-    ports:
-      - 5432:5432
     volumes:
       - pgdata:/var/lib/postgresql/data
-    env_file:
+    environment:
+      - POSTGRES_NAME=$DB_NAME
+      - POSTGRES_USER=$DB_USER
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+    env_file: 
       - .env
     restart: always
 
   redis:
     image: redis:alpine
     container_name: tracker_redis
-    ports:
-      - 6379:6379
     restart: always
 
   app:
     build: ./
     container_name: tracker_app
     environment:
-      - POSTGRES_HOST=tracker_postgres
-      - POSTGRES_PORT=5432
-      - REDIS_HOST=tracker_redis
-    ports: 
-      - 3001:3001
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - REDIS_HOST=redis
     env_file:
       - .env
     volumes:
       - .:/tracker
     command: python3 app.py
+    restart: always
     links:
       - postgres
       - redis

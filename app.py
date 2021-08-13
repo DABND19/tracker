@@ -7,8 +7,7 @@ import logging
 from data.config import WEBHOOK_URL
 
 
-logging.basicConfig(level=logging.INFO)
-
+logging.basicConfig(level=logging.WARNING)
 
 async def on_startup(*args):
     logging.info(WEBHOOK_URL)
@@ -31,7 +30,6 @@ async def on_startup(*args):
         await connection.run_sync(Base.metadata.create_all)
     async with Session() as session:
         await chats_store.load(session)
-
 
 async def on_shutdown(*args):
     await bot.delete_webhook()
