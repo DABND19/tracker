@@ -11,13 +11,22 @@ logging.basicConfig(level=logging.INFO)
 
 
 async def on_startup(*args):
-    await bot.set_webhook(WEBHOOK_URL)
+    logging.info(WEBHOOK_URL)
+    webhook = await bot.get_webhook_info()
+    if webhook.url != WEBHOOK_URL:
+        await bot.delete_webhook()
+    await bot.set_webhook(WEBHOOK_URL, certificate=open("cert.pem", "rb"))
     
+    webhook = await bot.get_webhook_info()
+    logging.info(webhook)
+
     async with engine.begin() as connection:
         await connection.run_sync(Base.metadata.create_all)
     async with Session() as session:
         await chats_store.load(session)
 
+async def on_shutdown(*args):
+    await bot.delete_webhook()
 
 if __name__ == "__main__":
     executor.start_webhook(
