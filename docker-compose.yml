@@ -1,0 +1,37 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:12-alpine
+    container_name: tracker_postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    env_file:
+      - .env
+    restart: always
+
+  redis:
+    image: redis:alpine
+    container_name: tracker_redis
+    ports:
+      - 6379:6379
+    restart: always
+
+  app:
+    build: ./
+    container_name: tracker_app
+    environment:
+      - POSTGRES_HOST=tracker_postgres
+      - POSTGRES_PORT=5432
+      - REDIS_HOST=tracker_redis
+    env_file:
+      - .env
+    volumes:
+      - .:/tracker
+    command: python3 app.py
+    links:
+      - postgres
+      - redis
+volumes:
+  pgdata:
