@@ -20,10 +20,10 @@ class ChatReport(NamedTuple):
 
 class ReplyController:
     def __init__(self, session: AsyncSession):
-        self.__session = session
+        self._session = session
 
     def create(self, question: types.Message, reply: types.Message):
-        self.__session.add(
+        self._session.add(
             Reply(time=reply.date,
                   delta=(reply.date - question.date).total_seconds(),
                   employee=reply.from_user.id,
@@ -40,7 +40,7 @@ class ReplyController:
 
         query = select(subquery, Chat.title).join(Chat)
 
-        result = await self.__session.execute(query)
+        result = await self._session.execute(query)
         record = result.first()
         
         if record is None:
@@ -58,6 +58,6 @@ class ReplyController:
 
         query = select(subquery, Employee.full_name).join(Employee)
 
-        result = await self.__session.execute(query)
+        result = await self._session.execute(query)
         return list(map(lambda record: EmployeeStats(full_name=record.full_name, avg_delta=timedelta(seconds=int(record.avg_delta)), replies_count=record.replies_count),
                         result.all()))
