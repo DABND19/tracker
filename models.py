@@ -7,7 +7,7 @@ Base = declarative_base()
 
 
 class Employee(Base):
-    __tablename__ = "Employee"
+    __tablename__ = "employees"
     id = Column(Integer, primary_key=True)
     username = Column(String(64))
     full_name = Column(String(64))
@@ -15,13 +15,13 @@ class Employee(Base):
 
 
 class Chat(Base):
-    __tablename__ = "Chat"
+    __tablename__ = "chats"
     id = Column(BigInteger, primary_key=True)
     title = Column(String(128), nullable=False)
 
 
 class Reply(Base):
-    __tablename__ = "Reply"
+    __tablename__ = "replies"
     id = Column(Integer, primary_key=True, autoincrement=True)
     time = Column(DateTime, nullable=False)
     delta = Column(Float, nullable=False)
