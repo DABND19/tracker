@@ -1,5 +1,18 @@
 version: "3"
 services:
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx:/etc/nginx/templates
+      - ./cert.pem:/cert.pem:ro
+      - ./cert.key:/cert.key:ro
+    env_file:
+      - .env
+    ports:
+      - 8443:8443
+    depends_on: 
+      - app
+
   postgres:
     image: postgres:alpine
     container_name: tracker_postgres
@@ -25,6 +38,8 @@ services:
       - POSTGRES_HOST=tracker_postgres
       - POSTGRES_PORT=5432
       - REDIS_HOST=tracker_redis
+    ports: 
+      - 3001:3001
     env_file:
       - .env
     volumes:
