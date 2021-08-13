@@ -1,5 +1,5 @@
 from aiogram import types
-from aiogram.utils.markdown import text, bold, pre
+from aiogram.utils.markdown import text, bold, pre, escape_md
 from aiogram.dispatcher.filters import Text
 from loader import dp, Session
 from controllers.reply import ReplyController
@@ -26,6 +26,6 @@ async def chat_stats_handler(callback_query: types.CallbackQuery):
             "Count": chain(map(lambda employee: employee.replies_count, employees_report), [chat_report.replies_count])
         }, tablefmt="plain", headers="keys")
 
-        payload = text(bold(chat_report.title), pre(table), sep="\n")
+        payload = text(bold(escape_md(chat_report.title)), pre(escape_md(table)), sep="\n")
 
         await callback_query.message.edit_text(payload, parse_mode=types.ParseMode.MARKDOWN)
