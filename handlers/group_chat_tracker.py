@@ -11,7 +11,8 @@ from data.store.employees import EmployeeStore
 async def group_chat_tracker(message: types.Message) -> None:
     store = chats_store[message.chat.id]
     async with store.lock, Session() as session:
-        if await EmployeeStore.contains(message.from_user.id):
+        is_employee = await EmployeeStore.contains(message.from_user.id)
+        if is_employee:
             if not store.unanswered_messages:
                 return
 
