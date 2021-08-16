@@ -26,7 +26,7 @@ async def on_shutdown(*args):
     await bot.delete_webhook()
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.info)
+    logging.basicConfig(level=logging.INFO)
 
     executor.start_webhook(
         dispatcher=dp,
