@@ -8,7 +8,7 @@ from data.config import WEBHOOK_URL
 
 
 async def on_startup(*args):
-    await bot.set_webhook(WEBHOOK_URL, certificate=open("../nginx/cert.pem", "rb"))
+    await bot.set_webhook(WEBHOOK_URL, certificate=open("cert.pem", "rb"))
 
     async with engine.begin() as connection:
         await connection.run_sync(Base.metadata.create_all)
