@@ -31,11 +31,11 @@ class ReplyController:
         )
 
     @staticmethod
-    def select_replies_deltas():
-        return select(Reply, func.extract("epoch", Reply.reply_time - Reply.question_time).label("delta_seconds"))
+    def select_replies_deltas(*fields):
+        return select(*fields, func.extract("epoch", Reply.reply_time - Reply.question_time).label("delta_seconds"))
 
     async def chat_report(self, chat_id: int) -> Optional[ChatReport]:
-        replies_deltas = self.select_replies_deltas()\
+        replies_deltas = self.select_replies_deltas(Reply.chat)\
             .where(Reply.chat == chat_id)\
             .subquery()
         subquery = select(replies_deltas,
@@ -54,7 +54,7 @@ class ReplyController:
         return ChatReport(**record, avg_delta=timedelta(seconds=int(record.avg_delta)))
 
     async def employees_report(self, chat_id: int) -> List[EmployeeStats]:
-        replies_deltas = self.select_replies_deltas()\
+        replies_deltas = self.select_replies_deltas(Reply.chat, Reply.employee)\
             .where(Reply.chat == chat_id)\
             .subquery()
         subquery = select(replies_deltas,
