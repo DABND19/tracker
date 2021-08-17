@@ -43,7 +43,8 @@ class ReplyController:
                           func.count().label("replies_count"))\
                               .group_by(replies_deltas.c.chat).cte()
 
-        query = select(subquery, Chat.title).join(Chat)
+        query = select(subquery, Chat.title)\
+            .join(Chat, subquery.c.chat == Chat.id)
 
         result = await self._session.execute(query)
         record = result.first()
@@ -54,17 +55,17 @@ class ReplyController:
         return ChatReport(title=record.title, avg_delta=timedelta(seconds=int(record.avg_delta)), replies_count=record.replies_count)
 
     async def employees_report(self, chat_id: int) -> List[EmployeeStats]:
-        replies_deltas = self.select_replies_deltas(Reply.chat, Reply.employee)\
+        replies_deltas = self.select_replies_deltas(Reply.employee)\
             .where(Reply.chat == chat_id)\
             .subquery()
-        subquery = select(replies_deltas.c.chat,
-                          replies_deltas.c.employee,
+        subquery = select(replies_deltas.c.employee,
                           func.avg(replies_deltas.c.delta_seconds).label("avg_delta"),
                           func.count(replies_deltas.c.employee).label("replies_count"))\
-            .group_by(replies_deltas.c.chat, replies_deltas.c.employee)\
+            .group_by(replies_deltas.c.employee)\
             .cte()
 
-        query = select(subquery, Employee.full_name).join(Employee)
+        query = select(subquery, Employee.full_name)\
+            .join(Employee, subquery.c.employee == Employee.id)
 
         result = await self._session.execute(query)
         return list(map(lambda record: EmployeeStats(full_name=record.full_name, avg_delta=timedelta(seconds=int(record.avg_delta)), replies_count=record.replies_count), result.all()))
