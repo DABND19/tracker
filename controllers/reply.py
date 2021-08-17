@@ -51,7 +51,7 @@ class ReplyController:
         if record is None:
             return None
 
-        return ChatReport(**record, avg_delta=timedelta(seconds=int(record.avg_delta)))
+        return ChatReport(title=record.title, avg_delta=timedelta(seconds=int(record.avg_delta)), replies_count=record.replies_count)
 
     async def employees_report(self, chat_id: int) -> List[EmployeeStats]:
         replies_deltas = self.select_replies_deltas(Reply.chat, Reply.employee)\
@@ -67,4 +67,4 @@ class ReplyController:
         query = select(subquery, Employee.full_name).join(Employee)
 
         result = await self._session.execute(query)
-        return list(map(lambda record: EmployeeStats(**record, avg_delta=timedelta(seconds=int(record.avg_delta))), result.all()))
+        return list(map(lambda record: EmployeeStats(full_name=record.full_name, avg_delta=timedelta(seconds=int(record.avg_delta)), replies_count=record.replies_count), result.all()))
