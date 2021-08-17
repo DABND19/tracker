@@ -34,7 +34,7 @@ services:
     restart: always
 
   app:
-    build: ./
+    build: ./src
     container_name: tracker_app
     environment:
       - DB_HOST=postgres
