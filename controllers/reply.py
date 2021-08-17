@@ -38,7 +38,7 @@ class ReplyController:
         replies_deltas = self.select_replies_deltas(Reply.chat)\
             .where(Reply.chat == chat_id)\
             .subquery()
-        subquery = select(replies_deltas,
+        subquery = select(replies_deltas.c.chat,
                           func.avg(replies_deltas.c.delta_seconds).label("avg_delta"),
                           func.count().label("replies_count"))\
                               .group_by(replies_deltas.c.chat).cte()
@@ -57,7 +57,8 @@ class ReplyController:
         replies_deltas = self.select_replies_deltas(Reply.chat, Reply.employee)\
             .where(Reply.chat == chat_id)\
             .subquery()
-        subquery = select(replies_deltas,
+        subquery = select(replies_deltas.c.chat,
+                          replies_deltas.c.employee,
                           func.avg(replies_deltas.c.delta_seconds).label("avg_delta"),
                           func.count(replies_deltas.c.employee).label("replies_count"))\
             .group_by(replies_deltas.c.chat, replies_deltas.c.employee)\
