@@ -23,7 +23,7 @@ class Chat(Base):
 class Reply(Base):
     __tablename__ = "replies"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    time = Column(DateTime, nullable=False)
-    delta = Column(Float, nullable=False)
+    question_time = Column(DateTime, nullable=False)
+    reply_time = Column(DateTime, nullable=False)
     employee = Column(Integer, ForeignKey(Employee.id), nullable=False)
     chat = Column(BigInteger, ForeignKey(Chat.id), nullable=False)

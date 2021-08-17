@@ -24,40 +24,44 @@ class ReplyController:
 
     def create(self, question: types.Message, reply: types.Message):
         self._session.add(
-            Reply(time=reply.date,
-                  delta=(reply.date - question.date).total_seconds(),
+            Reply(question_time=question.date,
+                  reply_time=reply.date,
                   employee=reply.from_user.id,
                   chat=reply.chat.id)
         )
 
+    def select_replies_deltas():
+        return select(Reply, func.extract("epoch", Reply.reply_time - Reply.question_time).label("delta_seconds"))
+
     async def chat_report(self, chat_id: int) -> Optional[ChatReport]:
-        subquery = select(Reply.chat,
-                          func.avg(Reply.delta).label("avg_delta"),
-                          func.count(Reply.id).label("replies_count"))\
-            .group_by(Reply.chat)\
+        replies_deltas = self.select_replies_deltas()\
             .where(Reply.chat == chat_id)\
             .subquery()
+        subquery = select(replies_deltas,
+                          func.avg(replies_deltas.c.delta_seconds).label("avg_delta"),
+                          func.count(replies_deltas.c.id).label("replies_count")).cte()
 
-        query = select(subquery, Chat.title).join(Chat)
+        query = select(subquery, Chat.title).join(Chat, Chat.id == subquery.c.chat)
 
         result = await self._session.execute(query)
         record = result.first()
-        
+
         if record is None:
             return None
-        
-        return ChatReport(title=record.title, avg_delta=timedelta(seconds=int(record.avg_delta)), replies_count=record.replies_count)
+
+        return ChatReport(**record, avg_delta=timedelta(seconds=int(record.avg_delta)))
 
     async def employees_report(self, chat_id: int) -> List[EmployeeStats]:
-        subquery = select(Reply.employee,
-                          func.avg(Reply.delta).label("avg_delta"),
-                          func.count(Reply.employee).label("replies_count"))\
+        replies_deltas = self.select_replies_deltas()\
             .where(Reply.chat == chat_id)\
-            .group_by(Reply.chat, Reply.employee)\
             .subquery()
+        subquery = select(replies_deltas,
+                          func.avg(replies_deltas.c.delta_seconds).label("avg_delta"),
+                          func.count(replies_deltas.c.employee).label("replies_count"))\
+            .group_by(replies_deltas.c.employee)\
+            .cte()
 
-        query = select(subquery, Employee.full_name).join(Employee)
+        query = select(subquery, Employee.full_name).join(Employee, Employee.id == subquery.c.employee)
 
         result = await self._session.execute(query)
-        return list(map(lambda record: EmployeeStats(full_name=record.full_name, avg_delta=timedelta(seconds=int(record.avg_delta)), replies_count=record.replies_count),
-                        result.all()))
+        return list(map(lambda record: EmployeeStats(**record, avg_delta=timedelta(seconds=int(record.avg_delta))), result.all()))
