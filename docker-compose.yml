@@ -5,8 +5,8 @@ services:
     container_name: tracker_nginx
     volumes:
       - ./nginx:/etc/nginx/templates
-      - ./cert.pem:/cert.pem:ro
-      - ./cert.key:/cert.key:ro
+      - ./nginx/cert.pem:/cert.pem:ro
+      - ./nginx/cert.key:/cert.key:ro
     env_file:
       - .env
     ports:
@@ -43,7 +43,8 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/tracker
+      - ./src:/src
+      - ../nginx/cert.pem:/nginx/cert.pem:ro
     command: python3 app.py
     restart: always
     links:

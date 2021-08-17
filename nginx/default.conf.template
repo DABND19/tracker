@@ -4,6 +4,7 @@ server {
 
   ssl_certificate     /cert.pem;
   ssl_certificate_key /cert.key;
+  ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
   
   location / {
     proxy_set_header Host $http_host;
