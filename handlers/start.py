@@ -3,9 +3,10 @@ from aiogram import types
 from aiogram.dispatcher.filters import CommandStart, ChatTypeFilter
 from aiogram.types.chat import ChatType
 from controllers.chat import ChatController
+from filters.admins import AdminsFilter
 
 
-@dp.message_handler(CommandStart(), ChatTypeFilter([ChatType.GROUP]))
+@dp.message_handler(CommandStart(), ChatTypeFilter([ChatType.GROUP]), AdminsFilter())
 async def start_command_handler(message: types.Message) -> None:
     if message.chat in chats_store:
         await message.answer("This chat is already tracked")
