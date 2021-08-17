@@ -30,6 +30,7 @@ class ReplyController:
                   chat=reply.chat.id)
         )
 
+    @staticmethod
     def select_replies_deltas():
         return select(Reply, func.extract("epoch", Reply.reply_time - Reply.question_time).label("delta_seconds"))
 
