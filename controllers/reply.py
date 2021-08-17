@@ -40,10 +40,10 @@ class ReplyController:
             .subquery()
         subquery = select(replies_deltas,
                           func.avg(replies_deltas.c.delta_seconds).label("avg_delta"),
-                          func.count(replies_deltas.c.id).label("replies_count"))\
+                          func.count().label("replies_count"))\
                               .group_by(replies_deltas.c.chat).cte()
 
-        query = select(subquery, Chat.title).join(Chat, Chat.id == subquery.c.chat)
+        query = select(subquery, Chat.title).join(Chat)
 
         result = await self._session.execute(query)
         record = result.first()
@@ -63,7 +63,7 @@ class ReplyController:
             .group_by(replies_deltas.c.chat, replies_deltas.c.employee)\
             .cte()
 
-        query = select(subquery, Employee.full_name).join(Employee, Employee.id == subquery.c.employee)
+        query = select(subquery, Employee.full_name).join(Employee)
 
         result = await self._session.execute(query)
         return list(map(lambda record: EmployeeStats(**record, avg_delta=timedelta(seconds=int(record.avg_delta))), result.all()))
