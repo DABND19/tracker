@@ -13,7 +13,7 @@ engine = aioredis.Redis(host=REDIS_HOST)
 class BaseStore:
     LOADING_LOCK = Lock()
     KEY = None
-    EXPIRES = timedelta(minutes=15)
+    EXPIRES = timedelta(minutes=1)
 
     @staticmethod
     async def _load_from_db(session: AsyncSession) -> List:
