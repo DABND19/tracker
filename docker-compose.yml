@@ -44,8 +44,7 @@ services:
       - .env
     volumes:
       - ./src:/src
-      - ./nginx:/nginx
-      - ./nginx/cert.pem:/nginx/cert.pem:ro
+      - ./nginx:/nginx:ro
     command: python3 app.py
     restart: always
     links:
