@@ -1,8 +1,8 @@
 from aiogram import Bot, Dispatcher
-from data.config import BOT_TOKEN, DB_URL, REDIS_HOST
+from data.config import BOT_TOKEN, DB_URL
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
-from data.chats import ChatsStore
+from data.store.chats import ChatsStore
 
 
 bot = Bot(BOT_TOKEN)
